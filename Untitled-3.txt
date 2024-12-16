@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personal website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        header, footer {
+            background-color: #371c5a;
+            color: rgb(235, 238, 239);
+            padding: 20px;
+            text-align: center;
+        }
+        nav a {
+            margin: 0 10px;
+            color: white;
+            text-decoration: none;
+        }
+        .row {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+        .post-text-box, .profile {
+            border: 2px solid #3d0d53;
+            padding: 5px;
+            border-radius: 5px;
+            width: 45%;
+        }
+        footer a {
+            margin: 0 5px;
+            color: rgb(239, 229, 229);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><b>Your Personal website</b></h1>
+        <nav>
+            <a href="domain.tld/home">Home</a>
+            <a href="domain.tld/website">Website</a>
+            <a href="domain.tld/about">About</a>
+        </nav>
+    </header>
+    <main>
+        <div class="row">
+            <div class="post-text-box">
+                <h1>New Post</h1>
+                <section>
+                    <h1>First Post</h1>
+                    <p>The first post’s content</p>
+                </section>
+            </div>
+            <div class="profile">
+                <h1>About Me</h1>
+                <img src="C:\Users\sudar\OneDrive\Desktop\anna.jpeg" alt="Profile Picture">
+                <p>About the author</p>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <a href="https://twitter.com/author">Twitter</a>
+        <a href="https://facebook.com/author">Facebook</a>
+        <a href="https://instagram.com/author">Instagram</a>
+    </footer>
+</body>
+</html>
