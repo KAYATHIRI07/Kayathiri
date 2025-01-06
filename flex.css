@@ -1,0 +1,18 @@
+.container div{
+    background-color: rgb(246, 134, 134);
+    border: 2px solid blue;
+    height:100px;
+    padding: 15px;
+}
+/*.one{
+    background-color: rgb(168, 104, 21);
+    padding: 5px;
+}*/
+.container{
+    width:100vw;
+    display: flex;
+    justify-content:center ;
+    background-color:blueviolet;
+    height: 1000px;
+    align-items:center;
+}
