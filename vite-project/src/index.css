@@ -1,0 +1,202 @@
+/* General Styling */
+.App {
+  font-family: 'Arial', sans-serif;
+  margin: 20px;
+  border: 2px solid #cadae4; /* Soft blue border */
+  background: #f1f4f9; /* Lighter background for a clean feel */
+  color: #4e5498;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background 0.3s ease; /* Smooth background color transition */
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  margin-bottom: 60px;
+  background: linear-gradient(45deg, #749bb5, #9791de);
+  padding: 40px 20px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  transition: transform 0.3s ease, background 0.5s ease;
+}
+
+.header h1 {
+  font-size: 3.5rem;
+  text-transform: uppercase;
+  color: #000; /* Changed to black for headings */
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  animation: fadeIn 1s ease-out;
+}
+
+.header p {
+  font-size: 1.2rem;
+  color: #0d2c56;
+  font-weight: 300;
+  animation: fadeIn 1.5s ease-out;
+}
+
+/* Skills Section */
+.skills ul {
+  list-style-type: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.skills li {
+  background-color: #5cc8d6;
+  color: #161f25;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  box-shadow: 0 4px 8px rgba(108, 103, 201, 0.2);
+}
+
+.skills li:hover {
+  transform: translateY(-10px);
+  background-color: #007acc;
+  color: #d1d7ea;
+  box-shadow: 0 8px 20px rgba(0, 122, 204, 0.3);
+}
+
+.skills li:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 8px rgba(0, 122, 204, 0.2);
+}
+
+/* Projects Section */
+.projects {
+  margin-top: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.project {
+  margin-bottom: 30px;
+  padding: 25px;
+  background: #736fb1;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(92, 89, 158, 0.2);
+  color: #a8a2d3;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(92, 89, 158, 0.4);
+}
+
+.project h3 {
+  color: #000; /* Changed to black for headings */
+  font-size: 1.6rem;
+  margin-bottom: 10px;
+  text-transform: capitalize;
+}
+
+.project p {
+  color: #09090c;
+  line-height: 1.6;
+}
+
+/* Section Styles */
+section {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, rgb(176, 180, 211), rgb(198, 205, 219));
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+section:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+section h2 {
+  font-size: 1.8rem;
+  color: #000; /* Changed to black for headings */
+  margin-bottom: 15px;
+}
+
+/* Footer Section */
+footer {
+  text-align: center;
+  margin-top: 60px;
+  font-size: 1rem;
+  color: #5156b9;
+  font-weight: 300;
+}
+
+footer p {
+  margin: 10px 0;
+}
+
+/* Animation Effects */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App {
+    margin: 20px;
+    padding: 15px;
+  }
+
+  .header h1 {
+    font-size: 2.5rem;
+  }
+
+  section h2 {
+    font-size: 1.6rem;
+  }
+
+  .skills li {
+    font-size: 1.1rem;
+  }
+
+  .project h3 {
+    font-size: 1.4rem;
+  }
+
+  .project p {
+    font-size: 1rem;
+  }
+}
+
+/* Additional Creative Enhancements */
+@media (hover: hover) {
+  .App:hover {
+    background-color: #e2f1fe; /* Subtle background color change on hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  }
+
+  .header:hover {
+    background: linear-gradient(45deg, #0b74e1, #7c9de1); /* A new gradient when hovering over header */
+  }
+
+  .skills li:hover {
+    transform: translateY(-12px);
+    background-color: #0066cc; /* More contrast on hover */
+  }
+}
