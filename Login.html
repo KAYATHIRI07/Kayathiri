@@ -4,31 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        body{
-            background-color: darkgrey;
-        }
-        fieldset{
-            background-color: rgb(101, 191, 185);
-        }
-    </style>
+    <script src="login.js"></script>
+    <link rel="stylesheet" href="login.css">
 </head>
 <center>
 <body>
     <center><h1>LOGIN</h1></center>
     <center>
     <fieldset>
-        <form>
+        <div class="container">
             <b><label for="name">Username:</label>
-            <input type="a" id="a" name="a"><br><br>
+            <input type="text" id="user"  placeholder="Enter username" required><br><br>
             <label for="pwd">Password:</label>
-            <input type="am" id="am" name="am"><br><br>
-            <input type="button" value="Login" ><br><br>
+            <input type="password" id="pass"  placeholder="Enter password" required><br><br>
+            <button type="button" class="submit" onclick="handleLogin()">Login</button>
+            <p id="error"></p>
             <a href="">Forgot password</a><br><br>
             Don't have an account?<br>
-            <a href="http://127.0.0.1:3000/Form.html">Sign up</a>
+            <a href="Form.html">Sign up</a>
         </b>
-        </form>
+    </div>
     </fieldset>
 </center>
 </body>
