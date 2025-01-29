@@ -1,0 +1,211 @@
+/* General Body and Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #111010;
+    color: #f1e7e7;
+    line-height: 1.6;
+    transition: background-color 0.3s ease;
+}
+
+h1, h2, h3, p {
+    margin: 0;
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: #726bcc; /* Vibrant Red */
+    color: #060a0f;
+    padding: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+    border-bottom: 2px solid #fff;
+}
+
+.navbar ul {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    gap: 20px;
+}
+
+.navbar a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.3rem;
+    font-weight: 600;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #194e82;
+    transform: scale(1.1);
+}
+
+/* Hero Section Styling */
+header {
+    background-color: #020203;
+    padding: 80px 20px;
+    text-align: center;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    margin-bottom: 40px;
+    border-radius: 10px;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 2px;
+}
+
+.hero-description {
+    font-size: 1.5rem;
+    color: #ece9e9;
+    margin-top: 20px;
+}
+
+/* Section Styling */
+section {
+    padding: 40px;
+    margin: 20px 0;
+    background-color: #6183a8;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+section:hover {
+    transform: translateY(-10px);
+}
+
+section h2 {
+    font-size: 2.5rem;
+    color: #0e0f10;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+section p, section ul {
+    font-size: 1.2rem;
+    text-align: center;
+}
+
+/* Skills Section */
+.skills ul {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.skills li {
+    background-color: #3e7dad;
+    color: rgb(243, 244, 252);
+    padding: 15px 25px;
+    border-radius: 30px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.skills li:hover {
+    background-color: #6164d6;
+    transform: scale(1.1);
+}
+
+/* Projects Section */
+.projects ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.projects li {
+    background-color: #1c7b92;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(104, 58, 58, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.projects li:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    background-color: #44508b;
+}
+
+.projects a {
+    text-decoration: none;
+    color: #8882eb;
+}
+
+.projects a:hover {
+    color: #8e44ad;
+}
+
+/* Certifications Section */
+.certifications ul {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 0;
+    text-align: center;
+}
+
+.certifications li {
+    background-color: #35376d;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.certifications li:hover {
+    background-color: #6c5fb7;
+}
+
+.certifications a {
+    color: #fff;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.certifications a:hover {
+    color: #18141a;
+}
+
+/* Footer Styling */
+footer {
+    background-color: #34495e;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+footer p {
+    font-size: 1.1rem;
+}
+
+footer li {
+    margin-bottom: 5px;
+}
+
+footer li a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+footer li a:hover {
+    color: #fff;
+}

@@ -1,42 +1,63 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+body {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  margin: 20PX;
+  padding: 20px;
+  background-image: url("https://www.google.com/url?sa=i&url=https%3A%2F%2Fiphonexpapers.com%2Fmf27-cosmos-night-live-space-starry%2F&psig=AOvVaw0GJnQN1c_WXcI_ORxDKRc8&ust=1736578590511000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCNDKsbfJ6ooDFQAAAAAdAAAAABAK");
+}
+.navbar {
+  font-family: Arial, sans-serif;
+  color: rgb(155, 96, 238);
+  font-size: large;
+  display: flex;
+  justify-content: center;
+}
+
+header {
+  background-color: #251150;
+  color: rgb(155, 96, 238);
+  padding: 20px;
+  border-radius: 25px;
   text-align: center;
+  box-shadow: 0 0 10px rgb(155, 96, 238);
+  
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+header h1 {
+  margin: 0;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+section {
+  padding: 20px;
+  margin: 20px;
+  background-color: #251150;
+  border-radius: 25px;
+  color: rgb(155, 96, 238);
+  box-shadow: 0 0 10px rgb(155, 96, 238);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+footer {
+  text-align: center;
+  padding: 10px;
+  border-radius: 25px;
+  background-color: #251150;
+  color: rgb(155, 96, 238);
 }
 
-.card {
-  padding: 2em;
+ul {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
 }
 
-.read-the-docs {
-  color: #888;
+li {
+  padding: 8px;
+}
+
+a {
+  color: #251150;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
 }
