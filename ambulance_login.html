@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambulance Driver Login</title>
+    <!-- Add your Google Maps API key here -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap" async defer></script>
+    <link rel="stylesheet" href="ambulance_login.css">
+</head>
+<body>
+
+    <!-- 🚑 Header Section -->
+    <div class="header">
+        <h1>🚨 Ambulance Driver Portal</h1>
+        <p>Secure access for emergency responders</p>
+    </div>
+
+    <!-- 🚑 Main Container -->
+    <div class="main-container">
+        <!-- 🚑 Registration Form -->
+        <div class="form-container" id="register-container">
+            <h2>📝 Driver Registration</h2>
+            <form id="register-form">
+                <input type="text" id="driver-name" placeholder="🚑 Driver Name" required>
+                <input type="text" id="ambulance-number" placeholder="🚘 Ambulance Number" required>
+                <input type="text" id="license-number" placeholder="📜 License Number" required>
+                <input type="text" id="hospital-affiliation" placeholder="🏥 Hospital Affiliation" required>
+                <input type="tel" id="contact-number" placeholder="📞 Contact Number" required>
+                <input type="password" id="register-password" placeholder="🔑 Password" required>
+                <button class="btn" type="submit">Register</button>
+            </form>
+            <p>Already registered? <a href="#" onclick="toggleForms()">Login</a></p>
+        </div>
+
+        <!-- 🚑 Login Form -->
+        <div class="form-container hidden" id="login-container">
+            <h2>🔑 Driver Login</h2>
+            <form id="login-form">
+                <input type="text" id="login-driver-name" placeholder="👨‍✈️ Driver Name" required>
+                <input type="password" id="login-password" placeholder="🔑 Password" required>
+                <button class="btn" type="submit">Login</button>
+            </form>
+            <p>Not registered? <a href="#" onclick="toggleForms()">Register</a></p>
+        </div>
+
+    </div>
+
+    <!-- 🚑 Accident Information Block -->
+    <div id="accident-block" class="hidden">
+        <h3>🚧 Accident Reported</h3>
+        <p><strong>Location:</strong> <span id="accident-location-text"></span></p>
+    </div>
+
+    <!-- 🚑 Map for Accident Location (Initially hidden) -->
+    <div id="accident-map-container" class="hidden">
+        <h3>📍 Accident Location</h3>
+        <div class="map-container" id="map"></div>
+    </div>
+
+    <!-- 🚑 JavaScript for Interaction -->
+    <script>
+        // Toggle between register and login forms
+        function toggleForms() {
+            document.getElementById('register-container').classList.toggle('hidden');
+            document.getElementById('login-container').classList.toggle('hidden');
+        }
+
+        // Registration logic
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('✅ Registration successful! You can now login.');
+            toggleForms(); // Switch to login screen after successful registration
+        });
+
+        // Login logic
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const driverName = document.getElementById('login-driver-name').value;
+            const password = document.getElementById('login-password').value;
+
+            if (driverName && password) {
+                alert('✅ Login successful!');
+                showAccidentLocation();
+            } else {
+                alert('❌ Invalid credentials. Try again!');
+            }
+        });
+
+        // Show accident location after login
+        function showAccidentLocation() {
+            document.getElementById('login-container').style.display = 'none';
+            document.getElementById('accident-block').classList.remove('hidden');
+            document.getElementById('accident-map-container').classList.remove('hidden');
+
+            const accidentLocation = { lat: 37.7749, lng: -122.4194 }; // Example coordinates
+
+            document.getElementById('accident-location-text').innerText = `Latitude: ${accidentLocation.lat}, Longitude: ${accidentLocation.lng}`;
+
+            addIframeMap();
+        }
+
+        // Add iframe map to container after login
+        function addIframeMap() {
+            const iframeMap = document.createElement('iframe');
+            iframeMap.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.0985827047953!2d77.01979347357448!3d10.880106157275703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba84ffc9b3ea755%3A0xda7508a90583d22f!2sKarpagam%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1738768015415!5m2!1sen!2sin";
+            iframeMap.width = "600";
+            iframeMap.height = "450";
+            iframeMap.style.border = "0";
+            iframeMap.allowFullscreen = true;
+            iframeMap.loading = "lazy";
+            iframeMap.referrerPolicy = "no-referrer-when-downgrade";
+
+            document.getElementById("map").appendChild(iframeMap); // Append iframe to the map container
+        }
+    </script>
+
+</body>
+</html>

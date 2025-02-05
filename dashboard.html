@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Traffic Dashboard</title>
+    
+    <!-- Google Maps API (Replace YOUR_API_KEY) -->
+    
+    <link rel="stylesheet" href="dashboard.css">
+
+    <script>
+        let map;
+        let userMarker;
+        let accidentMarker;
+        let ambulanceMarkers = [];
+
+        function initMap() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(position => {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    if (!map) {
+                        map = new google.maps.Map(document.getElementById("map"), {
+                            zoom: 14,
+                            center: userLocation
+                        });
+                    }
+                    
+                    if (!userMarker) {
+                        userMarker = new google.maps.Marker({
+                            position: userLocation,
+                            map,
+                            title: "Your Location",
+                            icon: "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+                        });
+                    } else {
+                        userMarker.setPosition(userLocation);
+                    }
+
+                    document.getElementById("location-info").innerText = "📍 Your Location: " + userLocation.lat.toFixed(4) + ", " + userLocation.lng.toFixed(4);
+                    
+                    showTrafficData();
+                    showAmbulanceLocations();
+                }, () => {
+                    alert("Geolocation failed. Please enable location services.");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showTrafficData() {
+            const accidentLocation = { lat: 37.7749, lng: -122.4194 };
+
+            if (!accidentMarker) {
+                accidentMarker = new google.maps.Marker({
+                    position: accidentLocation,
+                    map,
+                    icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+                    title: "Accident Reported"
+                });
+            }
+
+            document.getElementById("accident-alert").innerText = "⚠️ Accident Reported: " + accidentLocation.lat + ", " + accidentLocation.lng;
+            document.getElementById("accident-alert").style.background = "red";
+        }
+
+        function showAmbulanceLocations() {
+            const ambulances = [
+                { lat: 37.7755, lng: -122.4180 },
+                { lat: 37.7760, lng: -122.4165 }
+            ];
+
+            ambulanceMarkers.forEach(marker => marker.setMap(null));
+            ambulanceMarkers = [];
+
+            ambulances.forEach(location => {
+                let marker = new google.maps.Marker({
+                    position: location,
+                    map,
+                    icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                    title: "Ambulance"
+                });
+                ambulanceMarkers.push(marker);
+            });
+        }
+    </script>
+</head>
+<body onload="initMap()">
+    <div class="container">
+        <h1>🚦 Live Traffic Monitoring Dashboard</h1>
+        <p>Real-time updates on traffic, accidents, and ambulance tracking.</p>
+        <div class="alert" id="accident-alert">✅ No accidents reported.</div>
+        <div id="location-info">📍 Detecting your location...</div>
+
+        <!-- Replace with iframe map -->
+        <div class="map-container" id="map">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.0985827047953!2d77.01979347357448!3d10.880106157275703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba84ffc9b3ea755%3A0xda7508a90583d22f!2sKarpagam%20College%20of%20Engineering!5e0!3m2!1sen!2sin!4v1738768015415!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+</body>
+</html>

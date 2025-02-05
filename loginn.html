@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Login - AI Traffic System</title>
+    <link rel="stylesheet" href="loginn.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e3f2fd;
+            text-align: center;
+        }
+        .container {
+            width: 40%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            text-align: left;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background: #0056b3;
+        }
+        .details {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #d4edda;
+            border-radius: 5px;
+        }
+        .bill {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background: #f8d7da;
+            border-radius: 5px;
+            color: #721c24;
+        }
+    </style>
+    <script>
+        function loginUser() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            
+            if(username === "Peter" && password === "12345678") {
+                document.getElementById("details").style.display = "block";
+                document.getElementById("userDetails").innerHTML = `
+                    <h3>User Details</h3>
+                    <p><strong>Username:</strong> ${localStorage.getItem("Peter")}</p>
+                    <p><strong>License No:</strong> ${localStorage.getItem("licenseNo")}</p>
+                    <p><strong>Age:</strong> ${localStorage.getItem("age")}</p>
+                    <p><strong>Vehicle Number:</strong> ${localStorage.getItem("vehicleNumber")}</p>
+                `;
+                generateBill();
+            } else {
+                alert("Invalid credentials. Please try again.");
+            }
+        }
+
+        function generateBill() {
+            const fineAmount = Math.floor(Math.random() * 500) + 100;
+            const dueDate = new Date();
+            dueDate.setDate(dueDate.getDate() + 7);
+            document.getElementById("bill").style.display = "block";
+            document.getElementById("billDetails").innerHTML = `
+                <h3>Traffic Fine Bill</h3>
+                <p><strong>Fine Amount:</strong> $${fineAmount}</p>
+                <p><strong>Last Date to Pay:</strong> ${dueDate.toDateString()}</p>
+                <button class="btn" onclick="payFine()">Pay Fine</button>
+            `;
+        }
+        
+        function payFine() {
+            alert("Fine paid successfully!");
+            document.getElementById("bill").style.display = "none";
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>User Login</h1>
+        <div class="input-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+        </div>
+        <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        <button class="btn" onclick="loginUser()">Login</button>
+        <div class="details" id="details">
+            <div id="userDetails"></div>
+        </div>
+        <div class="bill" id="bill">
+            <div id="billDetails"></div>
+        </div>
+    </div>
+</body>
+</html>
