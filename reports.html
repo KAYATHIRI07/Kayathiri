@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Reports</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff9966, #ff5e62);
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #ff6f61;
+            color: white;
+        }
+        nav {
+            background: #2b2d42;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="expenses.html">Expenses</a>
+        <a href="reports.html">Reports</a>
+        <a href="savings.html">Savings</a>
+        <a href="bill.html">Generate Bill</a>
+    </nav>
+    <div class="container">
+        <h1 style="color: #ff6f61;">Monthly Expense Reports</h1>
+        <p>Comparison of expenses between the previous month and the current month.</p>
+        <div class="chart-container">
+            <canvas id="reportChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <script>
+        let previousMonthExpenses = [500, 100, 900, 150];
+        let currentMonthExpenses = [450, 120, 850, 200];
+        let categories = ["Food", "Entertainment", "Rent", "Other"];
+        
+        function generateReportChart() {
+            const ctx = document.getElementById("reportChart").getContext("2d");
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: categories,
+                    datasets: [
+                        {
+                            label: "Previous Month",
+                            data: previousMonthExpenses,
+                            backgroundColor: "#ffb400"
+                        },
+                        {
+                            label: "Current Month",
+                            data: currentMonthExpenses,
+                            backgroundColor: "#2d6a4f"
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", generateReportChart);
+    </script>
+</body>
+</html>

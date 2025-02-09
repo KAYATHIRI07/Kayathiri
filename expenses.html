@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #36d1dc, #5b86e5);
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #ff6f61;
+            color: white;
+        }
+        nav {
+            background: #2b2d42;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="expenses.html">Expenses</a>
+        <a href="reports.html">Reports</a>
+        <a href="savings.html">Savings</a>
+        <a href="bill.html">Generate Bill</a>
+    </nav>
+    <div class="container">
+        <h1 style="color: #ff6f61;">Expense Details</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Expense Name</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="expenseList">
+                <!-- Expenses will be added dynamically -->
+            </tbody>
+        </table>
+        <div class="chart-container">
+            <canvas id="expenseChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <script>
+        let expenses = [
+            { category: "Food", name: "Groceries", cost: 200 },
+            { category: "Entertainment", name: "Movies", cost: 50 },
+            { category: "Rent", name: "Apartment", cost: 800 },
+            { category: "Other", name: "Gym", cost: 60 }
+        ];
+
+        function renderExpenses() {
+            const expenseList = document.getElementById("expenseList");
+            expenseList.innerHTML = "";
+            expenses.forEach((item) => {
+                const row = `<tr><td>${item.category}</td><td>${item.name}</td><td>$${item.cost.toFixed(2)}</td></tr>`;
+                expenseList.innerHTML += row;
+            });
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById("expenseChart").getContext("2d");
+            const categories = ["Food", "Entertainment", "Rent", "Other"];
+            const categorySums = categories.map(cat =>
+                expenses.filter(exp => exp.category === cat).reduce((acc, exp) => acc + exp.cost, 0)
+            );
+            new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: "Expenses",
+                        data: categorySums,
+                        backgroundColor: ["#ff6f61", "#6a0572", "#2d6a4f", "#ffb400"]
+                    }]
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderExpenses();
+            updateChart();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Bill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+        label, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #ff6f61;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #e63946;
+        }
+        .bill-output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="color: #ff6f61;">Generate Your Bill</h1>
+        <label>Name: <input type="text" id="name"></label>
+        <label>Age: <input type="number" id="age"></label>
+        <label>Work Position: <input type="text" id="position"></label>
+        <label>Salary: <input type="number" id="salary"></label>
+        <label>Total Expenses: <input type="number" id="expenses"></label>
+        <label>Savings: <input type="number" id="savings"></label>
+        <button onclick="generateBill()">Generate Bill</button>
+        <div class="bill-output" id="billOutput"></div>
+    </div>
+    <script>
+        function generateBill() {
+            let name = document.getElementById("name").value;
+            let age = document.getElementById("age").value;
+            let position = document.getElementById("position").value;
+            let salary = parseFloat(document.getElementById("salary").value);
+            let expenses = parseFloat(document.getElementById("expenses").value);
+            let savings = parseFloat(document.getElementById("savings").value);
+            let balance = salary - (expenses + savings);
+            
+            let output = `
+                <h2>Bill Summary</h2>
+                <p><strong>Name:</strong> ${name}</p>
+                <p><strong>Age:</strong> ${age}</p>
+                <p><strong>Work Position:</strong> ${position}</p>
+                <p><strong>Salary:</strong> $${salary.toFixed(2)}</p>
+                <p><strong>Total Expenses:</strong> $${expenses.toFixed(2)}</p>
+                <p><strong>Savings:</strong> $${savings.toFixed(2)}</p>
+                <p><strong>Balance:</strong> $${balance.toFixed(2)}</p>
+            `;
+            document.getElementById("billOutput").innerHTML = output;
+        }
+    </script>
+</body>
+</html>

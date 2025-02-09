@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Savings</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+            background: white;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #0072ff;
+            color: white;
+        }
+        nav {
+            background: #2b2d42;
+            padding: 15px;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 20px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .chart-container {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="expenses.html">Expenses</a>
+        <a href="reports.html">Reports</a>
+        <a href="savings.html">Savings</a>
+        <a href="bill.html">Generate Bill</a>
+    </nav>
+    <div class="container">
+        <h1 style="color: #0072ff;">Monthly Savings</h1>
+        <p>Track your savings based on your salary each month.</p>
+        <div class="chart-container">
+            <canvas id="savingsChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+    <script>
+        let salaries = [3000, 3200, 3100, 3300, 3500];
+        let savings = [500, 700, 650, 800, 900];
+        let months = ["Jan", "Feb", "Mar", "Apr", "May"];
+        
+        function generateSavingsChart() {
+            const ctx = document.getElementById("savingsChart").getContext("2d");
+            new Chart(ctx, {
+                type: "line",
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: "Salary",
+                            data: salaries,
+                            borderColor: "#ff6f61",
+                            backgroundColor: "rgba(255, 111, 97, 0.2)",
+                            fill: true
+                        },
+                        {
+                            label: "Savings",
+                            data: savings,
+                            borderColor: "#2d6a4f",
+                            backgroundColor: "rgba(45, 106, 79, 0.2)",
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", generateSavingsChart);
+    </script>
+</body>
+</html>
