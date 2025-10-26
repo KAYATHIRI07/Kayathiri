@@ -1,5 +1,24 @@
 {
   "dependencies": {
     "react-router-dom": "^7.1.5"
-  }
+  },
+  "name": "kayathiri",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000K\u0000a\u0000y\u0000a\u0000t\u0000h\u0000i\u0000r\u0000i\u0000\r\u0000 \u0000",
+  "main": "func.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KAYATHIRI07/Kayathiri.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/KAYATHIRI07/Kayathiri/issues"
+  },
+  "homepage": "https://github.com/KAYATHIRI07/Kayathiri#readme"
 }

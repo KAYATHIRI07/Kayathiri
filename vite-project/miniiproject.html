@@ -1,0 +1,385 @@
+<!--
+Pothole Detection System - Final Single-file Web App (Google Maps iframe only)
+Features:
+- Dashboard and GPS Tracking use an embedded Google Map iframe (centered by default on Ukkadam, Coimbatore).
+- Dynamic centering of the iframe map when you click "View on map" for a pothole (no API key required) using the maps "q=lat,lng&output=embed" URL.
+- Functional demo Login / Signup using localStorage (demo only, not secure for production).
+- Pothole List with details (width, height, area) populated from simulated ESP32 data.
+- Simulated incoming hardware data arriving every few seconds.
+- Raise Complaint form with Name, Email, Location (auto-fill from selected pothole or geolocation), Description, and Upload Photo (previewed locally).
+- Clean responsive layout, no external CSS frameworks required.
+
+How to use:
+1. Save this file as pothole_detection_webpage.html and open in a browser.
+2. For production, replace the client-side simulation with your real backend endpoints and secure authentication.
+3. To center the embedded map on a pothole, click "View on map" in the list — the iframe will update to show that lat/lng.
+-->
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pothole Detection System — Google Maps Embed</title>
+  <style>
+    :root{--accent:#2563eb;--muted:#6b7280;--bg:#f8fafc}
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0;background:var(--bg);color:#0f172a}
+    .app{display:flex;min-height:100vh}
+    nav.side{width:270px;background:#fff;padding:18px;border-right:1px solid rgba(15,23,42,0.04)}
+    nav.side h1{margin:0 0 12px;font-size:18px}
+    .menu{display:flex;flex-direction:column;gap:8px}
+    .menu button{background:transparent;border:0;padding:10px 12px;text-align:left;border-radius:8px;cursor:pointer;font-weight:600}
+    .menu button.active{background:linear-gradient(90deg,var(--accent),#7c3aed);color:#fff}
+    main{flex:1;padding:20px}
+    header.appbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+    .card{background:#fff;border-radius:12px;padding:14px;box-shadow:0 6px 20px rgba(2,6,23,0.04)}
+    .map-wrap{height:60vh;border-radius:12px;overflow:hidden}
+    iframe.map-embed{width:100%;height:100%;border:0;display:block}
+
+    .grid{display:grid;grid-template-columns:1fr 360px;gap:16px}
+    .list{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-top:12px}
+    .pothole-item{padding:12px;border-radius:10px;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid #eef2ff}
+    .pothole-item h3{margin:0 0 6px}
+    .muted{color:var(--muted);font-size:13px}
+
+    form .form-row{display:flex;flex-direction:column;gap:6px;margin-bottom:10px}
+    input,select,textarea{padding:10px;border:1px solid #e6edf3;border-radius:8px;font-size:14px}
+    button.primary{background:var(--accent);color:#fff;padding:10px 12px;border-radius:8px;border:0;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+
+    .top-controls{display:flex;gap:8px;align-items:center}
+    .user-badge{padding:8px;border-radius:8px;background:#f8fafc;border:1px solid #eef2ff}
+    .map-actions{display:flex;gap:8px;margin-top:8px}
+
+    @media (max-width:980px){.grid{grid-template-columns:1fr}.menu{flex-direction:row;gap:6px;padding:10px} nav.side{display:none}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <nav class="side">
+      <h1>Pothole Detection</h1>
+      <div class="menu">
+        <button id="nav-dashboard" class="active" onclick="navigate('dashboard')">Dashboard</button>
+        <button id="nav-tracking" onclick="navigate('tracking')">GPS Tracking</button>
+        <button id="nav-list" onclick="navigate('list')">Pothole List</button>
+        <button id="nav-complaint" onclick="navigate('complaint')">Raise Complaint</button>
+      </div>
+
+      <div style="height:1px;background:#eef2ff;margin:14px 0"></div>
+      <div class="small">Account</div>
+      <div style="display:flex;gap:8px;align-items:center;margin-top:8px">
+        <div id="user-badge" class="user-badge muted">Not logged in</div>
+        <button id="btn-logout" style="display:none" onclick="logout()">Logout</button>
+      </div>
+
+      <div style="margin-top:18px">
+        <button class="primary" onclick="showAuth()">Login / Signup</button>
+      </div>
+    </nav>
+
+    <main>
+      <header class="appbar">
+        <div>
+          <h2 id="page-title" style="margin:0">Dashboard</h2>
+          <div class="small" id="page-sub">Live view of detected potholes — click any item to center the map.</div>
+        </div>
+        <div class="top-controls">
+          <div class="small">Demo mode</div>
+        </div>
+      </header>
+
+      <!-- Dashboard -->
+      <section id="view-dashboard" class="view">
+        <div class="card map-wrap">
+          <!-- Default embed centered on Ukkadam, Coimbatore. We'll change the iframe src dynamically to center on lat,lng -->
+          <iframe id="map-iframe" class="map-embed" loading="lazy" allowfullscreen
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7833.262693670314!2d76.96559694999999!3d10.9911739!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8599ff2d6b6b7%3A0x21dd600123cdb59e!2sUkkadam%2C%20Coimbatore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1761487116773!5m2!1sen!2sin"></iframe>
+        </div>
+
+        <div class="grid" style="margin-top:16px">
+          <div>
+            <div class="card">
+              <h3 style="margin-top:0">Latest Pothole Reports</h3>
+              <div id="latest-list" style="margin-top:8px"></div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <h3 style="margin-top:0">All Reports</h3>
+              <div class="list" id="pothole-list"></div>
+            </div>
+          </div>
+
+          <aside>
+            <div class="card details">
+              <h3 style="margin-top:0">Selected Pothole</h3>
+              <div id="detail-content" class="small">No pothole selected — click a report to view details and center map.</div>
+              <div class="map-actions" style="margin-top:10px">
+                <button class="primary" id="btn-center" style="display:none">Center Map</button>
+                <button onclick="useMyLocation()" class="primary" style="background:#10b981">Use My Location</button>
+              </div>
+            </div>
+
+            <div class="card" style="margin-top:12px">
+              <h4 style="margin:0 0 8px">Quick Actions</h4>
+              <div class="small">You can click a report and then raise a complaint using the pre-filled location.</div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- GPS Tracking -->
+      <section id="view-tracking" class="view" style="display:none">
+        <div class="card map-wrap">
+          <iframe id="map-iframe-tracking" class="map-embed" loading="lazy"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7833.262693670314!2d76.96559694999999!3d10.9911739!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba8599ff2d6b6b7%3A0x21dd600123cdb59e!2sUkkadam%2C%20Coimbatore%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1761487116773!5m2!1sen!2sin"></iframe>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:12px;align-items:center">
+          <div class="card" style="flex:1">
+            <h4 style="margin:0 0 8px">Live Feed (simulated)</h4>
+            <div id="tracking-log" class="small">Recent incoming GPS reports will appear here.</div>
+          </div>
+          <div class="card" style="width:260px">
+            <h4 style="margin:0 0 8px">Stats</h4>
+            <div class="small">Total reports: <span id="stat-count">0</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pothole List (alternate view) -->
+      <section id="view-list" class="view" style="display:none">
+        <div class="card">
+          <h3 style="margin-top:0">Pothole List</h3>
+          <div class="list" id="pothole-cards"></div>
+        </div>
+      </section>
+
+      <!-- Complaint -->
+      <section id="view-complaint" class="view" style="display:none">
+        <div class="card" style="max-width:780px;margin:auto">
+          <h3 style="margin-top:0">Raise a Complaint</h3>
+          <form id="complaint-form">
+            <div class="form-row"><label>Name</label><input id="compl-name" required /></div>
+            <div class="form-row"><label>Email</label><input id="compl-email" type="email" required /></div>
+            <div class="form-row"><label>Location (lat,lng)</label><input id="compl-location" placeholder="12.9716,77.5946" /></div>
+            <div class="form-row"><label>Description</label><textarea id="compl-desc" rows="4" required></textarea></div>
+            <div class="form-row"><label>Upload photo (optional)</label><input id="compl-photo" type="file" accept="image/*" /></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button class="primary" type="submit">Submit Complaint</button>
+              <div id="compl-msg" class="small" style="color:green"></div>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Auth modal (simple demo using localStorage) -->
+      <div id="auth-modal" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.45);align-items:center;justify-content:center">
+        <div style="width:420px;background:#fff;border-radius:12px;padding:18px;box-shadow:0 8px 36px rgba(2,6,23,0.3)">
+          <h3 id="auth-title">Login</h3>
+          <div style="margin-top:8px">
+            <div class="form-row"><input id="auth-name" placeholder="Full name (signup only)" style="display:none" /></div>
+            <div class="form-row"><input id="auth-email" placeholder="Email" /></div>
+            <div class="form-row"><input id="auth-password" placeholder="Password" type="password" /></div>
+            <div style="display:flex;gap:8px;justify-content:flex-end">
+              <button onclick="toggleAuthMode()" style="background:transparent;border:0;color:var(--accent);cursor:pointer">Switch to Signup</button>
+              <button class="primary" onclick="performAuth()">Continue</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ----- Demo storage -----
+    const storage = { users:[], token:null, potholes:[], complaints:[] };
+
+    // ------- Seed sample potholes -------
+    function seedData(){
+      const now = new Date();
+      storage.potholes = [
+        {id:'pothole-101',lat:10.99117,lng:76.96559,width:0.50,height:0.12,area:0.06,size:'medium',timestamp:now.toISOString(),device:'esp32-001'},
+        {id:'pothole-102',lat:10.99250,lng:76.97050,width:0.80,height:0.15,area:0.12,size:'large',timestamp:new Date(now-1000*60*30).toISOString(),device:'esp32-002'},
+        {id:'pothole-103',lat:10.98980,lng:76.96200,width:0.20,height:0.05,area:0.01,size:'small',timestamp:new Date(now-1000*60*90).toISOString(),device:'esp32-003'}
+      ];
+      updateUIFromStorage();
+    }
+
+    seedData();
+
+    // ------- Navigation -------
+    function navigate(page){
+      document.querySelectorAll('.view').forEach(v=>v.style.display='none');
+      document.getElementById('view-'+page).style.display='block';
+      document.getElementById('page-title').innerText = page==='dashboard' ? 'Dashboard' : (page==='tracking' ? 'GPS Tracking' : (page==='list' ? 'Pothole List' : 'Raise Complaint'));
+      document.querySelectorAll('nav.side .menu button').forEach(b=>b.classList.remove('active'));
+      const btn = document.getElementById('nav-'+page);
+      if(btn) btn.classList.add('active');
+    }
+
+    // ------- Auth (localStorage demo) -------
+    let authMode = 'login';
+    function showAuth(){ document.getElementById('auth-modal').style.display='flex'; updateAuthUI(); }
+    function toggleAuthMode(){ authMode = authMode==='login' ? 'signup' : 'login'; updateAuthUI(); }
+    function updateAuthUI(){ document.getElementById('auth-title').innerText = authMode==='login' ? 'Login' : 'Signup'; document.getElementById('auth-name').style.display = authMode==='signup' ? 'block' : 'none'; }
+    function performAuth(){
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
+      const name = document.getElementById('auth-name').value.trim();
+      if(!email || !password){ alert('Enter email and password'); return; }
+      if(authMode==='signup'){
+        const exists = JSON.parse(localStorage.getItem('pothole_users')||'[]').find(u=>u.email===email);
+        if(exists){ alert('User exists — try login'); return; }
+        const users = JSON.parse(localStorage.getItem('pothole_users')||'[]');
+        users.push({name,email,password});
+        localStorage.setItem('pothole_users', JSON.stringify(users));
+        storage.token = {email,name};
+        localStorage.setItem('pothole_token', JSON.stringify(storage.token));
+        alert('Signup successful — logged in');
+        document.getElementById('auth-modal').style.display='none'; updateUserUI();
+      } else {
+        const users = JSON.parse(localStorage.getItem('pothole_users')||'[]');
+        const u = users.find(u=>u.email===email && u.password===password);
+        if(!u){ alert('Invalid credentials'); return; }
+        storage.token = {email:u.email,name:u.name};
+        localStorage.setItem('pothole_token', JSON.stringify(storage.token));
+        document.getElementById('auth-modal').style.display='none'; updateUserUI();
+      }
+    }
+    function updateUserUI(){ const b = document.getElementById('user-badge'); const t = JSON.parse(localStorage.getItem('pothole_token')||'null'); if(t){ b.innerText = t.email; document.getElementById('btn-logout').style.display='inline-block'; } else { b.innerText = 'Not logged in'; document.getElementById('btn-logout').style.display='none'; }}
+    function logout(){ localStorage.removeItem('pothole_token'); storage.token=null; updateUserUI(); }
+    // init token
+    storage.token = JSON.parse(localStorage.getItem('pothole_token')||'null'); updateUserUI();
+
+    // ------- UI refresh based on storage -------
+    function updateUIFromStorage(){
+      renderLatest(); renderList(); renderCards(); document.getElementById('stat-count').innerText = storage.potholes.length;
+    }
+
+    function renderLatest(){
+      const container = document.getElementById('latest-list'); container.innerHTML='';
+      const recent = storage.potholes.slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).slice(0,5);
+      recent.forEach(p=>{
+        const el = document.createElement('div'); el.className='pothole-item';
+        el.innerHTML = `<h3>${p.id}</h3><div class='muted'>${new Date(p.timestamp).toLocaleString()} • ${p.size}</div><div style='margin-top:8px'>W:${p.width}m H:${p.height}m A:${p.area}m²</div><div style='margin-top:8px'><button class='primary' onclick="selectPothole('${p.id}')">Select</button> <button onclick="viewOnMap(${p.lat},${p.lng})">View on map</button></div>`;
+        container.appendChild(el);
+      });
+    }
+
+    function renderList(){
+      const container = document.getElementById('pothole-list'); container.innerHTML='';
+      storage.potholes.slice().forEach(p=>{
+        const el = document.createElement('div'); el.className='pothole-item';
+        el.innerHTML = `<h3>${p.id}</h3><div class='muted'>${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</div><div style='margin-top:6px'>W:${p.width}m H:${p.height}m</div><div style='margin-top:8px'><button onclick="selectPothole('${p.id}')" class='primary'>Details</button> <button onclick="viewOnMap(${p.lat},${p.lng})">View on map</button></div>`;
+        container.appendChild(el);
+      });
+    }
+
+    function renderCards(){
+      const container = document.getElementById('pothole-cards'); if(!container) return; container.innerHTML='';
+      storage.potholes.slice().reverse().forEach(p=>{
+        const card = document.createElement('div'); card.className='pothole-item';
+        card.innerHTML = `<h3>${p.id}</h3><div class='muted'>${new Date(p.timestamp).toLocaleString()}</div><div style='margin-top:6px'>W:${p.width}m H:${p.height}m A:${p.area}m²</div><div style='margin-top:8px'><button class='primary' onclick="selectPothole('${p.id}')">Select</button> <button onclick="viewOnMap(${p.lat},${p.lng})">View on map</button></div>`;
+        container.appendChild(card);
+      });
+    }
+
+    // ------- Selecting and centering -------
+    let selectedPothole = null;
+    function selectPothole(id){
+      const p = storage.potholes.find(x=>x.id===id); if(!p) return;
+      selectedPothole = p;
+      const d = document.getElementById('detail-content');
+      d.innerHTML = `<div><strong>ID:</strong> ${p.id}</div><div><strong>Reported:</strong> ${new Date(p.timestamp).toLocaleString()}</div><div><strong>Lat/Lng:</strong> ${p.lat.toFixed(6)}, ${p.lng.toFixed(6)}</div><div><strong>Width:</strong> ${p.width} m</div><div><strong>Height:</strong> ${p.height} m</div><div><strong>Area:</strong> ${p.area} m²</div><div style='margin-top:8px'><button class='primary' onclick="viewOnMap(${p.lat},${p.lng})">Center Map</button> <button onclick="prefillComplaint(${p.lat},${p.lng})">Raise Complaint</button></div>`;
+      document.getElementById('btn-center').style.display='inline-block';
+      document.getElementById('btn-center').onclick = ()=>viewOnMap(p.lat,p.lng);
+      // also update iframe-tracking to show same center
+      document.getElementById('map-iframe-tracking').src = `https://www.google.com/maps?q=${p.lat},${p.lng}&z=18&output=embed`;
+      // switch to dashboard to show iframe change
+      navigate('dashboard');
+    }
+
+    function viewOnMap(lat,lng){
+      // Use maps 'q=lat,lng' embed which doesn't require API key
+      const url = `https://www.google.com/maps?q=${lat},${lng}&z=18&output=embed`;
+      document.getElementById('map-iframe').src = url;
+      document.getElementById('map-iframe-tracking').src = url;
+      // show a subtle visual; no toast library used — simple text update
+      document.getElementById('page-sub').innerText = `Centered on ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+    }
+
+    // ------- Complaint prefilling and submission -------
+    function prefillComplaint(lat,lng){
+      navigate('complaint');
+      document.getElementById('compl-location').value = `${lat.toFixed(6)},${lng.toFixed(6)}`;
+      // show name/email if logged in
+      const t = JSON.parse(localStorage.getItem('pothole_token')||'null');
+      if(t){ document.getElementById('compl-name').value = t.name || '';
+                 document.getElementById('compl-email').value = t.email || ''; }
+    }
+
+    document.getElementById('complaint-form').addEventListener('submit', function(e){
+      e.preventDefault();
+      const name = document.getElementById('compl-name').value.trim();
+      const email = document.getElementById('compl-email').value.trim();
+      const loc = document.getElementById('compl-location').value.trim();
+      const desc = document.getElementById('compl-desc').value.trim();
+      const photo = document.getElementById('compl-photo').files[0];
+      if(!name || !email || !desc){ alert('Please fill required fields'); return; }
+      const c = {id:'compl-'+(storage.complaints.length+1),name,email,location:loc,description:desc,ts:new Date().toISOString()};
+      storage.complaints.push(c);
+      document.getElementById('compl-msg').innerText = 'Complaint submitted (demo)';
+      console.log('Complaint (demo):', c);
+      setTimeout(()=>document.getElementById('compl-msg').innerText='',2500);
+      // optionally preview photo locally (not uploaded anywhere)
+      if(photo){ const reader = new FileReader(); reader.onload = (ev)=>{ const w = window.open(''); w.document.write(`<img src="${ev.target.result}" style="max-width:100%">`); }; reader.readAsDataURL(photo); }
+    });
+
+    // ------- Use browser geolocation -------
+    function useMyLocation(){
+      if(!navigator.geolocation){ alert('Geolocation not supported'); return; }
+      navigator.geolocation.getCurrentPosition(pos=>{
+        const lat = pos.coords.latitude; const lng = pos.coords.longitude;
+        document.getElementById('map-iframe').src = `https://www.google.com/maps?q=${lat},${lng}&z=18&output=embed`;
+        document.getElementById('map-iframe-tracking').src = `https://www.google.com/maps?q=${lat},${lng}&z=18&output=embed`;
+        document.getElementById('page-sub').innerText = `Centered on your location ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+      }, err=>{ alert('Unable to get location: '+err.message); });
+    }
+
+    // ------- Simulate incoming hardware data -------
+    function simulateHardwareIncoming(){
+      const jitter = ()=> (Math.random()-0.5)/1000; // finer jitter ~0.0005
+      const now = new Date();
+      const id = 'pothole-'+(200 + Math.floor(Math.random()*300));
+      const width = (Math.random()*0.9 + 0.1).toFixed(2);
+      const height = (Math.random()*0.25 + 0.03).toFixed(2);
+      const area = (parseFloat(width)*parseFloat(height)).toFixed(3);
+      const size = (area > 0.08) ? 'large' : (area > 0.03 ? 'medium' : 'small');
+      // center around Ukkadam approx (10.99117,76.96559)
+      const p = {id, lat:10.99117 + jitter(), lng:76.96559 + jitter(), width:parseFloat(width), height:parseFloat(height), area:parseFloat(area), size, timestamp: now.toISOString(), device:'esp32-sim'};
+      const idx = storage.potholes.findIndex(x=>x.id===p.id);
+      if(idx>=0) storage.potholes[idx] = p; else storage.potholes.push(p);
+      // update UI
+      updateUIFromStorage();
+      // log to tracking
+      const el = document.getElementById('tracking-log'); if(el){ el.innerText = `Last report: ${p.id} @ ${p.lat.toFixed(6)}, ${p.lng.toFixed(6)} (${new Date(p.timestamp).toLocaleTimeString()})\n` + el.innerText; }
+      document.getElementById('stat-count').innerText = storage.potholes.length;
+      setTimeout(simulateHardwareIncoming, 8000 + Math.random()*7000);
+    }
+
+    // start simulation
+    setTimeout(simulateHardwareIncoming, 1500);
+
+    // expose adding from backend (useful for websockets)
+    window.addPotholeFromESP = function(p){ const idx = storage.potholes.findIndex(x=>x.id===p.id); if(idx>=0) storage.potholes[idx]=p; else storage.potholes.push(p); updateUIFromStorage(); };
+
+    // initialize UI
+    updateUIFromStorage();
+
+    // ------- Helpers: prefill complaint when clicking a pothole in list -------
+    function prefillComplaintFromSelected(){ if(!selectedPothole) return; prefillComplaint(selectedPothole.lat, selectedPothole.lng); }
+  </script>
+</body>
+</html>
